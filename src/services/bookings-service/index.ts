@@ -1,7 +1,7 @@
 import { forbiddenError, notFoundError } from '@/errors';
 import bookingsRepository from '@/repositories/bookings-repository';
 import enrollmentRepository from '@/repositories/enrollment-repository';
-import paymentsRepository from '@/repositories/payments-repository';
+// import paymentsRepository from '@/repositories/payments-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
 
 async function getBooking(userId: number) {
@@ -25,10 +25,10 @@ async function createBooking(userId: number, roomId: number) {
   if (ticket.TicketType.isRemote || !ticket.TicketType.includesHotel || ticket.status === 'RESERVED' || !ticket) {
     throw forbiddenError();
   }
-  const payment = await paymentsRepository.findPaymentByTicketId(ticket.id);
-  if (!payment) {
-    throw forbiddenError();
-  }
+  // const payment = await paymentsRepository.findPaymentByTicketId(ticket.id);
+  // if (!payment) {
+  //   throw forbiddenError();
+  // }
   const room = await bookingsRepository.findRoomById(roomId);
   if (!room) {
     throw notFoundError();
@@ -37,7 +37,8 @@ async function createBooking(userId: number, roomId: number) {
   if (room.capacity <= booking.length) {
     throw forbiddenError();
   }
-  await bookingsRepository.upsertBooking(userId, roomId, null);
+  const bookingReservation = await bookingsRepository.createBooking(userId, roomId);
+  return bookingReservation;
 }
 
 async function updateBooking(userId: number, bookingId: number, roomId: number) {
@@ -53,7 +54,8 @@ async function updateBooking(userId: number, bookingId: number, roomId: number) 
   if (room.capacity <= bookingReservations.length) {
     throw forbiddenError();
   }
-  await bookingsRepository.upsertBooking(userId, roomId, bookingId);
+  const bookingUpdate = await bookingsRepository.updateBooking(userId, roomId, bookingId);
+  return bookingUpdate;
 }
 
 const bookingsService = { getBooking, createBooking, updateBooking };
