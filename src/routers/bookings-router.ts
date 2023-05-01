@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken, validateBody } from '@/middlewares';
 import { createBooking, getBooking, updateBooking } from '@/controllers';
-import { bookingsSchema } from '@/schemas/bookings-schemas';
+import { bookingsSchema } from '@/schemas/booking-schemas';
 
 const bookingsRouter = Router();
 

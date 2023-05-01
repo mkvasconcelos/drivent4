@@ -1,10 +1,10 @@
 import { forbiddenError, notFoundError } from '@/errors';
-import bookingsRepository from '@/repositories/bookings-repository';
+import bookingRepository from '@/repositories/booking-repository';
 import enrollmentRepository from '@/repositories/enrollment-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
 
 async function getBooking(userId: number) {
-  const booking = await bookingsRepository.findBookingByUserId(userId);
+  const booking = await bookingRepository.findBookingByUserId(userId);
   if (!booking) {
     throw notFoundError();
   }
@@ -24,32 +24,32 @@ async function createBooking(userId: number, roomId: number) {
   if (ticket.TicketType.isRemote || !ticket.TicketType.includesHotel || ticket.status === 'RESERVED' || !ticket) {
     throw forbiddenError();
   }
-  const room = await bookingsRepository.findRoomById(roomId);
+  const room = await bookingRepository.findRoomById(roomId);
   if (!room) {
     throw notFoundError();
   }
-  const booking = await bookingsRepository.findBookingByRoomId(roomId);
+  const booking = await bookingRepository.findBookingByRoomId(roomId);
   if (room.capacity <= booking.length) {
     throw forbiddenError();
   }
-  const bookingReservation = await bookingsRepository.createBooking(userId, roomId);
+  const bookingReservation = await bookingRepository.createBooking(userId, roomId);
   return bookingReservation;
 }
 
 async function updateBooking(userId: number, bookingId: number, roomId: number) {
-  const booking = await bookingsRepository.findBookingById(bookingId);
+  const booking = await bookingRepository.findBookingById(bookingId);
   if (!booking || booking.userId !== userId) {
     throw forbiddenError();
   }
-  const room = await bookingsRepository.findRoomById(roomId);
+  const room = await bookingRepository.findRoomById(roomId);
   if (!room) {
     throw notFoundError();
   }
-  const bookingReservations = await bookingsRepository.findBookingByRoomId(roomId);
+  const bookingReservations = await bookingRepository.findBookingByRoomId(roomId);
   if (room.capacity <= bookingReservations.length) {
     throw forbiddenError();
   }
-  const bookingUpdate = await bookingsRepository.updateBooking(userId, roomId, bookingId);
+  const bookingUpdate = await bookingRepository.updateBooking(userId, roomId, bookingId);
   return bookingUpdate;
 }
 
