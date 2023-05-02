@@ -53,6 +53,6 @@ async function updateBooking(userId: number, bookingId: number, roomId: number) 
   return bookingUpdate;
 }
 
-const bookingsService = { getBooking, createBooking, updateBooking };
+const bookingService = { getBooking, createBooking, updateBooking };
 
-export default bookingsService;
+export default bookingService;
